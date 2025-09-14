@@ -34,7 +34,7 @@ export enum AxisRotation {
   XNorthYWest = 270
 }
 
-export enum YAxisFlip {
+export enum AxisFlip {
   Flip = -1,
   NoFlip = 1
 }
@@ -79,7 +79,8 @@ export type OriginAnchorType =
 export interface CoordinateSystem {
   axisAnchor: AxisAnchor;
   axisRotation: AxisRotation;
-  yAxisFlip: YAxisFlip;
+  yAxisFlip: AxisFlip;
+  xAxisFlip: AxisFlip;
   headingAnchor: HeadingAnchor;
   headingRotation: HeadingRotation;
   headingDirection: HeadingDirection;
@@ -117,7 +118,8 @@ export function getNamedCoordinateSystems(): NamedCoordinateSystem[] {
       previewImageUrl: "static/coordinate-system-preview-vex-gps.png",
       axisAnchor: AxisAnchor.Default,
       axisRotation: AxisRotation.XEastYNorth,
-      yAxisFlip: YAxisFlip.NoFlip,
+      yAxisFlip: AxisFlip.NoFlip,
+      xAxisFlip: AxisFlip.NoFlip,
       headingAnchor: HeadingAnchor.Default,
       headingRotation: HeadingRotation.North,
       headingDirection: HeadingDirection.Clockwise,
@@ -131,7 +133,8 @@ export function getNamedCoordinateSystems(): NamedCoordinateSystem[] {
       previewImageUrl: "static/coordinate-system-preview-cartesian-plane.png",
       axisAnchor: AxisAnchor.Default,
       axisRotation: AxisRotation.XEastYNorth,
-      yAxisFlip: YAxisFlip.NoFlip,
+      yAxisFlip: AxisFlip.NoFlip,
+      xAxisFlip: AxisFlip.NoFlip,
       headingAnchor: HeadingAnchor.Default,
       headingRotation: HeadingRotation.East,
       headingDirection: HeadingDirection.CounterClockwise,
@@ -145,7 +148,8 @@ export function getNamedCoordinateSystems(): NamedCoordinateSystem[] {
       previewImageUrl: "static/coordinate-system-preview-path-relative.png",
       axisAnchor: AxisAnchor.Default,
       axisRotation: AxisRotation.XEastYNorth,
-      yAxisFlip: YAxisFlip.NoFlip,
+      yAxisFlip: AxisFlip.NoFlip,
+      xAxisFlip: AxisFlip.NoFlip,
       headingAnchor: HeadingAnchor.Default,
       headingRotation: HeadingRotation.North,
       headingDirection: HeadingDirection.Clockwise,
@@ -159,12 +163,27 @@ export function getNamedCoordinateSystems(): NamedCoordinateSystem[] {
       previewImageUrl: "static/coordinate-system-preview-path-relative-strict-mode.png",
       axisAnchor: AxisAnchor.PathBeginning,
       axisRotation: AxisRotation.XEastYNorth,
-      yAxisFlip: YAxisFlip.NoFlip,
+      yAxisFlip: AxisFlip.NoFlip,
+      xAxisFlip: AxisFlip.NoFlip,
       headingAnchor: HeadingAnchor.PathBeginning,
       headingRotation: HeadingRotation.North,
       headingDirection: HeadingDirection.Clockwise,
       originAnchor: OriginAnchor.PathBeginning,
       originOffset: { x: 0, y: 0 }
+    },
+    {
+      name: "GHOST ROS coordinates",
+      description: "90 degrees is where the driver is facing, 0,0 is a the back right corner. ",
+      previewImageUrl: "",
+      axisAnchor: AxisAnchor.Default,
+      axisRotation: AxisRotation.XNorthYWest,
+      yAxisFlip: AxisFlip.NoFlip,
+      xAxisFlip: AxisFlip.Flip,
+      headingAnchor: HeadingAnchor.Default,
+      headingRotation: HeadingRotation.South,
+      headingDirection: HeadingDirection.Clockwise,
+      originAnchor: OriginAnchor.FieldCenter,
+      originOffset: { x: 3, y: -3 }
     }
   ];
 }
@@ -240,6 +259,7 @@ export class CoordinateSystemTransformation {
     const transformed = this.et.transform(alpha);
 
     transformed.y *= this.system.yAxisFlip;
+    transformed.x *= this.system.xAxisFlip;
 
     if (isCoordinateWithHeading(alpha)) {
       const temp = boundHeading(alpha.heading - this.headingRotation);
@@ -256,6 +276,7 @@ export class CoordinateSystemTransformation {
   inverseTransform(beta: Coordinate | CoordinateWithHeading): Coordinate | CoordinateWithHeading {
     const temp = { ...beta };
     temp.y *= this.system.yAxisFlip;
+    temp.x *= this.system.xAxisFlip;
 
     const transformed = this.et.inverseTransform(temp);
 
