@@ -165,6 +165,19 @@ export function getNamedCoordinateSystems(): NamedCoordinateSystem[] {
       headingDirection: HeadingDirection.Clockwise,
       originAnchor: OriginAnchor.PathBeginning,
       originOffset: { x: 0, y: 0 }
+    },
+    {
+      name: "GHOST ROS coordinates",
+      description: "90 degrees is where the driver is facing, 0,0 is a the back right corner. ",
+      previewImageUrl: "",
+      axisAnchor: AxisAnchor.Default,
+      axisRotation: AxisRotation.XNorthYWest,
+      yAxisFlip: YAxisFlip.NoFlip,
+      headingAnchor: HeadingAnchor.Default,
+      headingRotation: HeadingRotation.South,
+      headingDirection: HeadingDirection.Clockwise,
+      originAnchor: OriginAnchor.FieldCenter,
+      originOffset: { x: -3, y: -3 }
     }
   ];
 }
